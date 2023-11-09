@@ -12,16 +12,14 @@ search.addEventListener('click', () => {
         return;
 
     fetch(`http://api.weatherapi.com/v1/current.json?key=${APIKey}&q=${city}&aqi=no`)
-        .then(response => response.json()).then(json => {
-
-        if (json.cod === '404') {
-            container.style.height = '400px';
-            weatherBox.style.display = 'none';
-            weatherDetails.style.display = 'none';
-            error404.style.display = 'block';
-            error404.classList.add('fadeIn');
-            return;
-        }
+        .then(response => {
+                if (response.status === 400) {
+                    throw new Error();
+                } else {
+                    return response.json();
+                }
+            }
+        ).then(json => {
 
         error404.style.display = 'none';
         error404.classList.remove('fadeIn');
@@ -34,31 +32,28 @@ search.addEventListener('click', () => {
 
         switch (json.current.condition.text) {
             case 'Sunny':
-                image.src = 'images/clear.jpg';
-                break;
             case 'Clear':
-                image.src = 'images/clear.jpg';
+                image.src = 'images/clear.jng';
                 break;
-            case 'Light Rain':
-                image.src = 'images/rain.jpg';
-                break;
+            case 'Light rain':
             case 'Rain':
-                image.src = 'images/rain.jpg';
+                image.src = 'images/rain.jng';
                 break;
             case 'Blowing snow':
-                image.src = 'images/snow.jpg';
-                break;
             case 'Snow':
-                image.src = 'images/snow.jpg';
+                image.src = 'images/snow.jng';
                 break;
             case 'Partly cloudy':
-                image.src = 'images/cloud.jpg';
+                image.src = 'images/cloud.jng';
+                break;
+            case 'Overcast':
+                image.src = 'images/overcast.jpg';
                 break;
             case 'Clouds':
                 image.src = 'images/cloud.jpg';
                 break;
             case 'Haze':
-                image.src = 'images/haze.jpg';
+                image.src = 'images/haze.jng';
                 break;
             default:
                 image.src = '';
@@ -74,5 +69,19 @@ search.addEventListener('click', () => {
         weatherBox.classList.add('fadeIn');
         weatherDetails.classList.add('fadeIn');
         container.style.height = '590px';
+
+    }).catch(error => {
+        container.style.height = '400px';
+        weatherBox.style.display = 'none';
+        weatherDetails.style.display = 'none';
+        error404.style.display = 'block';
+        error404.classList.add('fadeIn');
     })
 })
+
+
+
+
+
+
+
